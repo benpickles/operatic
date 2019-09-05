@@ -1,3 +1,4 @@
+require 'operatic/errors'
 require 'operatic/result'
 require 'operatic/version'
 
@@ -12,6 +13,12 @@ module Operatic
         .tap(&:call)
         .then(&:result)
         .then(&:freeze)
+    end
+
+    def call!(attrs = nil)
+      call(attrs).tap { |result|
+        raise FailureError if result.failure?
+      }
     end
 
     def result(*args)

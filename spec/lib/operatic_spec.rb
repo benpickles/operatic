@@ -19,6 +19,34 @@ RSpec.describe Operatic do
     end
   end
 
+  describe '.call!' do
+    let(:klass) {
+      Class.new do
+        include Operatic
+
+        attr_accessor :oh_no
+
+        def call
+          failure! if oh_no
+        end
+      end
+    }
+
+    context 'when the result is a success' do
+      it do
+        expect(klass.call!).to be_success
+      end
+    end
+
+    context 'when the result is a failure' do
+      it do
+        expect {
+          klass.call!(oh_no: true)
+        }.to raise_error(Operatic::FailureError)
+      end
+    end
+  end
+
   describe '.result' do
     let(:klass) {
       Class.new do
