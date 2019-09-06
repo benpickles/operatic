@@ -40,7 +40,7 @@ module Operatic
   end
 
   def failure!(data = nil)
-    result.tap { |r| r.failure!(data) }
+    result.failure!(data)
   end
 
   def result
@@ -48,6 +48,6 @@ module Operatic
   end
 
   def success!(data = nil)
-    result.tap { |r| r.success!(data) }
+    result.success!(data)
   end
 end
