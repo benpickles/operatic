@@ -4,8 +4,14 @@ on: [push]
 
 jobs:
   rspec:
-    name: RSpec
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby:
+          - '2.5.x'
+          - '2.6.x'
+
+    name: Ruby ${{ matrix.ruby }} RSpec
 
     steps:
     - uses: actions/checkout@v1
@@ -13,7 +19,7 @@ jobs:
     - name: Set up Ruby
       uses: actions/setup-ruby@v1
       with:
-        ruby-version: 2.6.x
+        ruby-version: ${{ matrix.ruby }}
 
     - name: Install dependencies
       run: bundle install --jobs 4
