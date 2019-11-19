@@ -21,7 +21,10 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
 
-    - name: Install dependencies
+    - name: Install latest bundler
+      run: gem install bundler
+
+    - name: Install operatic dependencies
       run: bundle install --jobs 4
 
     - name: Run RSpec
