@@ -11,8 +11,8 @@ module Operatic
     def call(attrs = nil)
       new(attrs)
         .tap(&:call)
-        .then(&:result)
-        .then(&:freeze)
+        .result
+        .freeze
     end
 
     def call!(attrs = nil)
