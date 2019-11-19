@@ -32,7 +32,7 @@ module Operatic
 
   def initialize(attrs = nil)
     attrs.each do |key, value|
-      public_send("#{key}=", value)
+      instance_variable_set("@#{key}", value)
     end if attrs
   end
 

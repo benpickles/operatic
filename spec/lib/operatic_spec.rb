@@ -23,7 +23,7 @@ RSpec.describe Operatic do
       Class.new do
         include Operatic
 
-        attr_accessor :oh_no
+        attr_reader :oh_no
 
         def call
           failure! if oh_no
@@ -93,11 +93,11 @@ RSpec.describe Operatic do
       Class.new do
         include Operatic
 
-        attr_accessor :call_twice
-        attr_accessor :early_failure
-        attr_accessor :early_failure_with_data
-        attr_accessor :failure_after_setting_data
-        attr_accessor :failure_after_success
+        attr_reader :call_twice
+        attr_reader :early_failure
+        attr_reader :early_failure_with_data
+        attr_reader :failure_after_setting_data
+        attr_reader :failure_after_success
 
         def call
           if call_twice
@@ -177,11 +177,11 @@ RSpec.describe Operatic do
       Class.new do
         include Operatic
 
-        attr_accessor :call_after_failure
-        attr_accessor :call_after_setting_data
-        attr_accessor :call_twice
-        attr_accessor :explicitly_called
-        attr_accessor :explicitly_called_with_data
+        attr_reader :call_after_failure
+        attr_reader :call_after_setting_data
+        attr_reader :call_twice
+        attr_reader :explicitly_called
+        attr_reader :explicitly_called_with_data
 
         result :a
 
