@@ -14,8 +14,6 @@ module Operatic
       end
     end
 
-    attr_reader :success
-
     def initialize
       @data = {}
       @success = true
