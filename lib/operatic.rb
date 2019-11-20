@@ -30,7 +30,11 @@ module Operatic
     end
   end
 
+  attr_reader :result
+
   def initialize(attrs = nil)
+    @result = self.class.result_class.new
+
     attrs.each do |key, value|
       instance_variable_set("@#{key}", value)
     end if attrs
@@ -41,10 +45,6 @@ module Operatic
 
   def failure!(data = nil)
     result.failure!(data)
-  end
-
-  def result
-    @result ||= self.class.result_class.new
   end
 
   def success!(data = nil)
