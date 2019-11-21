@@ -1,5 +1,10 @@
 module Operatic
   class Result
+    # Generate a subclass of {Result} with named +attrs+ accessors. This
+    # wouldn't normally be called directly, see {ClassMethods#result} for
+    # example usage.
+    #
+    # @param attrs [Array<Symbol>] a list of accessors to the result's data.
     def self.generate(*attrs)
       Class.new(self) do
         attrs.each do |name|
@@ -19,8 +24,16 @@ module Operatic
       @success = true
     end
 
-    def failure!(d = nil)
-      set_data(d) if d
+    # Mark the result as a failure, optionally attach data, and freeze the
+    # object so it cannot be modified further.
+    #
+    # *Note*: After calling this method calling {#success!} or {#failure!}
+    # again will raise a +FrozenError+.
+    #
+    # @param data [Hash<Symbol, anything>] an optional hash of data to attach
+    #   to the result.
+    def failure!(data = nil)
+      set_data(data) if data
       @success = false
       freeze
     end
@@ -34,8 +47,20 @@ module Operatic
       super
     end
 
-    def success!(d = nil)
-      set_data(d) if d
+    # Mark the result as a success, optionally attach data, and freeze the
+    # object so it cannot be modified further.
+    #
+    # Calling this is not strictly necessary as a result defaults to being a
+    # success, but it's a convenient means of attaching data and of indicating
+    # intent in the consuming code.
+    #
+    # *Note*: After calling this method calling {#success!} or {#failure!}
+    # again will raise a +FrozenError+.
+    #
+    # @param data [Hash<Symbol, anything>] an optional hash of data to attach
+    #   to the result.
+    def success!(data = nil)
+      set_data(data) if data
       @success = true
       freeze
     end
@@ -44,13 +69,17 @@ module Operatic
       @success
     end
 
+    # Returns the full hash of data attached to the result via {#success!},
+    # {#failure!}, or convenience accessors added with {.generate}.
+    #
+    # @return [Hash]
     def to_hash
       @data
     end
 
     private
-      def set_data(d)
-        d.each do |key, value|
+      def set_data(data)
+        data.each do |key, value|
           @data[key] = value
         end
       end
