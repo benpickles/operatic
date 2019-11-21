@@ -4,17 +4,15 @@ module Operatic
       Class.new(self) do
         attrs.each do |name|
           define_method name do
-            data[name]
+            @data[name]
           end
 
           define_method "#{name}=" do |value|
-            data[name] = value
+            @data[name] = value
           end
         end
       end
     end
-
-    attr_reader :data, :success
 
     def initialize
       @data = {}
@@ -32,7 +30,7 @@ module Operatic
     end
 
     def freeze
-      data.freeze
+      @data.freeze
       super
     end
 
@@ -46,10 +44,14 @@ module Operatic
       @success
     end
 
+    def to_hash
+      @data
+    end
+
     private
       def set_data(d)
         d.each do |key, value|
-          data[key] = value
+          @data[key] = value
         end
       end
   end
