@@ -2,39 +2,64 @@
 
 [![GitHub Actions status](https://github.com/benpickles/operatic/workflows/Ruby/badge.svg)](https://github.com/benpickles/operatic)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/operatic`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
-Add this line to your application's Gemfile:
+Add Operatic to your application's Gemfile and run `bundle install`.
 
 ```ruby
 gem 'operatic'
 ```
 
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install operatic
-
 ## Usage
 
-TODO: Write usage instructions here
+An Operatic class encapsulates an operation and communicates the status of the operation via its result object. As well as being either a `#success?` or a `#failure?` further data can be attached via `#success!`, `#failure!` or convenience accessors.
 
-## Development
+```ruby
+class SayHello
+  include Operatic
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+  # Readers for attributes passed via `.call`.
+  attr_reader :name
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+  # Declare convenience accessors on the result.
+  result :message
 
-## Contributing
+  def call
+    # Exit the method and mark the result as a failure.
+    return failure! unless name
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/benpickles/operatic. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+    # Mark the result as a success and attach further data.
+    success!(message: "Hello #{name}")
+  end
+end
+
+result = SayHello.call(name: 'Dave')
+result.success? # => true
+result.message  # => "Hello Dave"
+result.to_hash  # => {:message=>"Hello Dave"}
+
+result = SayHello.call
+result.failure? # => true
+result.success? # => false
+result.message  # => nil
+result.to_hash  # => {}
+```
+
+A Rails controller might use Operatic like this:
+
+```ruby
+class HellosController < ApplicationController
+  def create
+    result = SayHello.call(name: params[:name])
+
+    if result.success?
+      render plain: result.message
+    else
+      render :new
+    end
+  end
+end
+```
 
 ## License
 
