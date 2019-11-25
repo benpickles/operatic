@@ -95,12 +95,12 @@ module Operatic
   #
   #   result = SayHello.call(name: 'Dave')
   #   result.success? # => true
-  #   result.to_hash  # => {:message=>"Hello Dave"}
+  #   result.to_h     # => {:message=>"Hello Dave"}
   #
   #   result = SayHello.call
   #   result.failure? # => true
   #   result.success? # => false
-  #   result.to_hash  # => {}
+  #   result.to_h     # => {}
   def call
   end
 
