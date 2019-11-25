@@ -12,8 +12,8 @@ RSpec.describe Operatic do
 
         expect(result).to be_success
         expect(result).to be_frozen
-        expect(result.to_hash).to eql({})
-        expect(result.to_hash).to be_frozen
+        expect(result.to_h).to eql({})
+        expect(result.to_h).to be_frozen
       end
     end
   end
@@ -72,8 +72,8 @@ RSpec.describe Operatic do
       expect(result.a).to eql(1)
       expect(result.b).to eql(2)
       expect(result).not_to respond_to(:c)
-      expect(result.to_hash).to eql({ a: 1, b: 2, c: 3 })
-      expect(result.to_hash).to be_frozen
+      expect(result.to_h).to eql({ a: 1, b: 2, c: 3 })
+      expect(result.to_h).to be_frozen
     end
 
     it 'only defines accessors on its own result class' do
@@ -110,7 +110,7 @@ RSpec.describe Operatic do
           return failure!(a: 1, b: 2) if early_failure_with_data
 
           if failure_after_setting_data
-            result.to_hash[:c] = 3
+            result.to_h[:c] = 3
             return failure!
           end
 
@@ -128,8 +128,8 @@ RSpec.describe Operatic do
 
         expect(result).to be_failure
         expect(result).to be_frozen
-        expect(result.to_hash).to eql({})
-        expect(result.to_hash).to be_frozen
+        expect(result.to_h).to eql({})
+        expect(result.to_h).to be_frozen
       end
     end
 
@@ -139,8 +139,8 @@ RSpec.describe Operatic do
 
         expect(result).to be_failure
         expect(result).to be_frozen
-        expect(result.to_hash).to eql({ a: 1, b: 2 })
-        expect(result.to_hash).to be_frozen
+        expect(result.to_h).to eql({ a: 1, b: 2 })
+        expect(result.to_h).to be_frozen
       end
     end
 
@@ -150,8 +150,8 @@ RSpec.describe Operatic do
 
         expect(result).to be_failure
         expect(result).to be_frozen
-        expect(result.to_hash).to eql({ c: 3 })
-        expect(result.to_hash).to be_frozen
+        expect(result.to_h).to eql({ c: 3 })
+        expect(result.to_h).to be_frozen
       end
     end
 
@@ -192,7 +192,7 @@ RSpec.describe Operatic do
           end
 
           if call_after_setting_data
-            result.to_hash[:a] = 1
+            result.to_h[:a] = 1
             return success!
           end
 
@@ -214,8 +214,8 @@ RSpec.describe Operatic do
 
         expect(result).to be_success
         expect(result).to be_frozen
-        expect(result.to_hash).to be_empty
-        expect(result.to_hash).to be_frozen
+        expect(result.to_h).to be_empty
+        expect(result.to_h).to be_frozen
       end
     end
 
@@ -225,8 +225,8 @@ RSpec.describe Operatic do
 
         expect(result).to be_success
         expect(result).to be_frozen
-        expect(result.to_hash).to be_empty
-        expect(result.to_hash).to be_frozen
+        expect(result.to_h).to be_empty
+        expect(result.to_h).to be_frozen
       end
     end
 
@@ -236,8 +236,8 @@ RSpec.describe Operatic do
 
         expect(result).to be_success
         expect(result).to be_frozen
-        expect(result.to_hash).to eql({ b: 2 })
-        expect(result.to_hash).to be_frozen
+        expect(result.to_h).to eql({ b: 2 })
+        expect(result.to_h).to be_frozen
       end
     end
 
@@ -247,8 +247,8 @@ RSpec.describe Operatic do
 
         expect(result).to be_success
         expect(result).to be_frozen
-        expect(result.to_hash).to eql({ a: 1 })
-        expect(result.to_hash).to be_frozen
+        expect(result.to_h).to eql({ a: 1 })
+        expect(result.to_h).to be_frozen
       end
     end
 

@@ -73,7 +73,7 @@ module Operatic
     # {#failure!}, or convenience accessors added with {.generate}.
     #
     # @return [Hash]
-    def to_hash
+    def to_h
       @data
     end
 

@@ -10,11 +10,11 @@ RSpec.describe Operatic::Result do
       expect(result.data).to eql(1)
       expect(result.stuff).to eql(2)
       expect(result).not_to respond_to(:c)
-      expect(result.to_hash).to eql({ data: 1, stuff: 2 })
+      expect(result.to_h).to eql({ data: 1, stuff: 2 })
 
-      result.to_hash[:c] = 3
+      result.to_h[:c] = 3
 
-      expect(result.to_hash).to eql({ data: 1, stuff: 2, c: 3 })
+      expect(result.to_h).to eql({ data: 1, stuff: 2, c: 3 })
     end
   end
 
@@ -26,8 +26,8 @@ RSpec.describe Operatic::Result do
 
       expect(result).to be_failure
       expect(result).to be_frozen
-      expect(result.to_hash).to eql({ a: 1, b: 2 })
-      expect(result.to_hash).to be_frozen
+      expect(result.to_h).to eql({ a: 1, b: 2 })
+      expect(result.to_h).to be_frozen
     end
   end
 
@@ -39,8 +39,8 @@ RSpec.describe Operatic::Result do
 
       expect(result).to be_success
       expect(result).to be_frozen
-      expect(result.to_hash).to eql({ a: 1, b: 2 })
-      expect(result.to_hash).to be_frozen
+      expect(result.to_h).to eql({ a: 1, b: 2 })
+      expect(result.to_h).to be_frozen
     end
   end
 end
