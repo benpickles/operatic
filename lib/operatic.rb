@@ -17,7 +17,7 @@ module Operatic
     # @param attrs [Hash<Symbol, anything>] an optional hash of key/values to
     #   to the result. The class must have corresponding +attr_reader+s
     #
-    # @return a [Result] which is fro
+    # @return a [Result]
     def call(attrs = nil)
       new(attrs)
         .tap(&:call)

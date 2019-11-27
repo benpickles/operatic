@@ -2,6 +2,8 @@
 
 [![GitHub Actions status](https://github.com/benpickles/operatic/workflows/Ruby/badge.svg)](https://github.com/benpickles/operatic)
 
+A minimal standard interface for your operations.
+
 ## Installation
 
 Add Operatic to your application's Gemfile and run `bundle install`.

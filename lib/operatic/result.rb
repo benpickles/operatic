@@ -69,8 +69,8 @@ module Operatic
       @success
     end
 
-    # Returns the full hash of data attached to the result via {#success!},
-    # {#failure!}, or convenience accessors added with {.generate}.
+    # Returns the full (frozen) hash of data attached to the result via
+    # {#success!}, {#failure!}, or convenience accessors added with {.generate}.
     #
     # @return [Hash]
     def to_h
