@@ -8,24 +8,15 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - '2.5.x'
-          - '2.6.x'
-
+          - '2.5'
+          - '2.6'
+          - '2.7'
+          - '3.0'
     name: Ruby ${{ matrix.ruby }} RSpec
-
     steps:
-    - uses: actions/checkout@v1
-
-    - name: Set up Ruby
-      uses: actions/setup-ruby@v1
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
       with:
+        bundler-cache: true
         ruby-version: ${{ matrix.ruby }}
-
-    - name: Install latest bundler
-      run: gem install bundler
-
-    - name: Install operatic dependencies
-      run: bundle install --jobs 4
-
-    - name: Run RSpec
-      run: bundle exec rspec
+    - run: bundle exec rspec
