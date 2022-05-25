@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 0.4.0 - 2022-05-25
+
+- Switch to keyword arguments. <https://github.com/benpickles/operatic/pull/8>
+
 ## Version 0.3.1 - 2020-01-05
 
 - Less specific Rake dependency. <https://github.com/benpickles/operatic/pull/6>
