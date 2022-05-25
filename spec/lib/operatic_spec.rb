@@ -16,6 +16,17 @@ RSpec.describe Operatic do
         expect(result.to_h).to be_frozen
       end
     end
+
+    context 'when called with something other than kwargs' do
+      it 'raises ArgumentError', :aggregate_failures do
+        expect { klass.call('Dave') }.to raise_error(ArgumentError)
+        expect { klass.call(['Dave']) }.to raise_error(ArgumentError)
+
+        if RUBY_VERSION > '3.0'
+          expect { klass.call({ name: 'Dave' }) }.to raise_error(ArgumentError)
+        end
+      end
+    end
   end
 
   describe '.call!' do

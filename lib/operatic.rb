@@ -11,15 +11,12 @@ module Operatic
   module ClassMethods
     # The main way of calling an operation.
     #
-    # The class is instantiated with supplied +attrs+ and calls {Operatic#call}
-    # returning a frozen {Result} instance.
+    # The class is instantiated with the supplied +attrs+ keyword arguments and
+    # calls {Operatic#call} returning a frozen {Result} instance.
     #
-    # @param attrs [Hash<Symbol, anything>] an optional hash of key/values to
-    #   to the result. The class must have corresponding +attr_reader+s
-    #
-    # @return a [Result]
-    def call(attrs = nil)
-      new(attrs)
+    # @return [Result]
+    def call(**attrs)
+      new(**attrs)
         .tap(&:call)
         .result
         .freeze
@@ -30,8 +27,8 @@ module Operatic
     # test setups, etc.
     #
     # @return [Result]
-    def call!(attrs = nil)
-      call(attrs).tap { |result|
+    def call!(**attrs)
+      call(**attrs).tap { |result|
         raise FailureError if result.failure?
       }
     end
@@ -55,8 +52,11 @@ module Operatic
     #   result = SayHello.call(name: 'Dave')
     #   result.success? # => true
     #   result.message  # => "Hello Dave"
-    def result(*args)
-      @result_class = Result.generate(*args)
+    #
+    # @param attrs [Array<Symbol>] a list of convenience data accessors to
+    #   define on the {Result}.
+    def result(*attrs)
+      @result_class = Result.generate(*attrs)
     end
 
     def result_class
@@ -69,23 +69,25 @@ module Operatic
   # @return [Result]
   attr_reader :result
 
-  def initialize(attrs = nil)
+  def initialize(**attrs)
     @result = self.class.result_class.new
 
     attrs.each do |key, value|
       instance_variable_set("@#{key}", value)
-    end if attrs
+    end
   end
 
   # Override this method with your implementation. Use {#success!} or
   # {#failure!} methods to communicate the {#result}'s status and to attach
-  # data it. Define convenience result accessors with {ClassMethods#result}.
+  # data to it. Define convenience result accessors with {ClassMethods#result}.
   #
   # @example
   #   class SayHello
   #     include Operatic
   #
   #     attr_reader :name
+  #
+  #     result :message
   #
   #     def call
   #       return failure! unless name
@@ -94,23 +96,26 @@ module Operatic
   #   end
   #
   #   result = SayHello.call(name: 'Dave')
+  #   result.failure? # => false
   #   result.success? # => true
+  #   result.message  # => "Hello Dave"
   #   result.to_h     # => {:message=>"Hello Dave"}
   #
   #   result = SayHello.call
   #   result.failure? # => true
   #   result.success? # => false
+  #   result.message  # => nil
   #   result.to_h     # => {}
   def call
   end
 
   # Convenience shortcut to the operation's {Result#failure!}.
-  def failure!(data = nil)
-    result.failure!(data)
+  def failure!(**data)
+    result.failure!(**data)
   end
 
   # Convenience shortcut to the operation's {Result#success!}.
-  def success!(data = nil)
-    result.success!(data)
+  def success!(**data)
+    result.success!(**data)
   end
 end
