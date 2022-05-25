@@ -11,15 +11,12 @@ module Operatic
   module ClassMethods
     # The main way of calling an operation.
     #
-    # The class is instantiated with supplied +attrs+ and calls {Operatic#call}
-    # returning a frozen {Result} instance.
-    #
-    # @param attrs [Hash<Symbol, anything>] an optional hash of key/values to
-    #   to the result. The class must have corresponding +attr_reader+s
+    # The class is instantiated with the supplied +attrs+ keyword arguments and
+    # calls {Operatic#call} returning a frozen {Result} instance.
     #
     # @return a [Result]
-    def call(attrs = nil)
-      new(attrs)
+    def call(**attrs)
+      new(**attrs)
         .tap(&:call)
         .result
         .freeze
@@ -30,8 +27,8 @@ module Operatic
     # test setups, etc.
     #
     # @return [Result]
-    def call!(attrs = nil)
-      call(attrs).tap { |result|
+    def call!(**attrs)
+      call(**attrs).tap { |result|
         raise FailureError if result.failure?
       }
     end
@@ -69,12 +66,12 @@ module Operatic
   # @return [Result]
   attr_reader :result
 
-  def initialize(attrs = nil)
+  def initialize(**attrs)
     @result = self.class.result_class.new
 
     attrs.each do |key, value|
       instance_variable_set("@#{key}", value)
-    end if attrs
+    end
   end
 
   # Override this method with your implementation. Use {#success!} or
@@ -105,12 +102,12 @@ module Operatic
   end
 
   # Convenience shortcut to the operation's {Result#failure!}.
-  def failure!(data = nil)
-    result.failure!(data)
+  def failure!(**data)
+    result.failure!(**data)
   end
 
   # Convenience shortcut to the operation's {Result#success!}.
-  def success!(data = nil)
-    result.success!(data)
+  def success!(**data)
+    result.success!(**data)
   end
 end
