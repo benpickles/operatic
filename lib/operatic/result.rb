@@ -4,7 +4,7 @@ module Operatic
     # wouldn't normally be called directly, see {ClassMethods#result} for
     # example usage.
     #
-    # @param attrs [Array<Symbol>] a list of accessors to the result's data.
+    # @param attrs [Array<Symbol>] a list of convenience data accessors.
     def self.generate(*attrs)
       Class.new(self) do
         attrs.each do |name|
@@ -27,8 +27,8 @@ module Operatic
     # Mark the result as a failure, optionally attach +data+ via kwargs, and
     # freeze the object so it cannot be modified further.
     #
-    # *Note*: After calling this method calling {#success!} or {#failure!}
-    # again will raise a +FrozenError+.
+    # *Note*: Calling {#success!} or {#failure!} more than once will raise a
+    # +FrozenError+.
     def failure!(**data)
       set_data(**data)
       @success = false
@@ -47,12 +47,12 @@ module Operatic
     # Mark the result as a success, optionally attach +data+ via kwargs, and
     # freeze the object so it cannot be modified further.
     #
-    # Calling this is not strictly necessary as a result defaults to being a
+    # Calling this is not strictly necessary as a +Result+ defaults to being a
     # success, but it's a convenient means of attaching data and of indicating
     # intent in the consuming code.
     #
-    # *Note*: After calling this method calling {#success!} or {#failure!}
-    # again will raise a +FrozenError+.
+    # *Note*: Calling {#success!} or {#failure!} more than once will raise a
+    # +FrozenError+.
     def success!(**data)
       set_data(**data)
       @success = true
@@ -66,7 +66,7 @@ module Operatic
     # Returns the full (frozen) hash of data attached to the result via
     # {#success!}, {#failure!}, or convenience accessors added with {.generate}.
     #
-    # @return [Hash]
+    # @return [Hash<Symbol, anything>]
     def to_h
       @data
     end
