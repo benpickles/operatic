@@ -12,9 +12,22 @@ RSpec.describe Operatic::Result do
       expect(result).not_to respond_to(:c)
       expect(result.to_h).to eql({ data: 1, stuff: 2 })
 
-      result.to_h[:c] = 3
+      result[:c] = 3
 
       expect(result.to_h).to eql({ data: 1, stuff: 2, c: 3 })
+    end
+  end
+
+  describe '#[]= / #[]' do
+    let(:result) { described_class.new }
+
+    it 'sets and gets data' do
+      result[:a] = 1
+      result[:b] = 2
+
+      expect(result[:a]).to be(1)
+      expect(result[:b]).to be(2)
+      expect(result.to_h).to eql({ a: 1, b: 2 })
     end
   end
 

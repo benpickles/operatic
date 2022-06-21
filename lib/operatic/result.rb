@@ -24,6 +24,16 @@ module Operatic
       @success = true
     end
 
+    # Read data that's attached to the result.
+    def [](key)
+      @data[key]
+    end
+
+    # Set data on the result.
+    def []=(key, value)
+      @data[key] = value
+    end
+
     # Mark the result as a failure, optionally attach +data+ via kwargs, and
     # freeze the object so it cannot be modified further.
     #
