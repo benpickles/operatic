@@ -1,7 +1,7 @@
 module Operatic
   class Result
     # Generate a subclass of {Result} with named +attrs+ accessors. This
-    # wouldn't normally be called directly, see {ClassMethods#result} for
+    # wouldn't normally be called directly, see {ClassMethods#result_attr} for
     # example usage.
     #
     # @param attrs [Array<Symbol>] a list of convenience data accessors.

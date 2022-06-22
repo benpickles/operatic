@@ -24,7 +24,7 @@ class SayHello
   attr_reader :name
 
   # Declare convenience accessors on the result.
-  result :message
+  result_attr :message
 
   def call
     # Exit the method and mark the result as a failure.
