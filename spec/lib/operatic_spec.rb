@@ -121,7 +121,7 @@ RSpec.describe Operatic do
           return failure!(a: 1, b: 2) if early_failure_with_data
 
           if failure_after_setting_data
-            result.to_h[:c] = 3
+            result[:c] = 3
             return failure!
           end
 
@@ -203,7 +203,7 @@ RSpec.describe Operatic do
           end
 
           if call_after_setting_data
-            result.to_h[:a] = 1
+            result[:a] = 1
             return success!
           end
 

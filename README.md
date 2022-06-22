@@ -36,15 +36,17 @@ class SayHello
 end
 
 result = SayHello.call(name: 'Dave')
-result.success? # => true
-result.message  # => "Hello Dave"
-result.to_h     # => {:message=>"Hello Dave"}
+result.success?  # => true
+result.message   # => "Hello Dave"
+result[:message] # => "Hello Dave"
+result.to_h      # => {:message=>"Hello Dave"}
 
 result = SayHello.call
-result.failure? # => true
-result.success? # => false
-result.message  # => nil
-result.to_h     # => {}
+result.failure?  # => true
+result.success?  # => false
+result.message   # => nil
+result[:message] # => nil
+result.to_h      # => {}
 ```
 
 A Rails controller might use Operatic like this:
