@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 0.5.0 - 2022-06-23
+
+- Support custom initialize method to aid compatibility with other libraries. <https://github.com/benpickles/operatic/pull/11>
+- Rename to `Operatic.result_attr` to be more specific about its functionality. <https://github.com/benpickles/operatic/pull/10>
+- Get and set Result data with `#[]` / `#[]=`. <https://github.com/benpickles/operatic/pull/9>
+
 ## Version 0.4.0 - 2022-05-25
 
 - Switch to keyword arguments. <https://github.com/benpickles/operatic/pull/8>
