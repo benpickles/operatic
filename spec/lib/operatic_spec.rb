@@ -57,12 +57,12 @@ RSpec.describe Operatic do
     end
   end
 
-  describe '.result' do
+  describe '.result_attr' do
     let(:klass) {
       Class.new do
         include Operatic
 
-        result :a, :b
+        result_attr :a, :b
 
         def call
           result.a = 1
@@ -92,7 +92,7 @@ RSpec.describe Operatic do
         include Operatic
       end
 
-      result = klass.call
+      klass.call
       another_result = another_klass.call
 
       expect(another_result).not_to respond_to(:a)
@@ -194,7 +194,7 @@ RSpec.describe Operatic do
         attr_reader :explicitly_called
         attr_reader :explicitly_called_with_data
 
-        result :a
+        result_attr :a
 
         def call
           if call_after_failure
