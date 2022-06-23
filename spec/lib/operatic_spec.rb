@@ -99,6 +99,34 @@ RSpec.describe Operatic do
     end
   end
 
+  describe 'overriding #initialize' do
+    let(:klass) {
+      Class.new do
+        include Operatic
+
+        def initialize(name:)
+          @name = name
+        end
+
+        def call
+          result.success!(message: "Hello #{@name}")
+        end
+      end
+    }
+
+    it 'works as expected with known arguments' do
+      result = klass.call(name: 'Bob')
+
+      expect(result[:message]).to eql('Hello Bob')
+    end
+
+    it 'works as expected with unknown arguments' do
+      expect {
+        klass.call(foo: 'bar')
+      }.to raise_error(ArgumentError)
+    end
+  end
+
   describe '#failure!' do
     let(:klass) {
       Class.new do
