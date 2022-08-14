@@ -34,6 +34,23 @@ module Operatic
       @data[key] = value
     end
 
+    # Returns an array of success and data.
+    #
+    # @example
+    #   result = Result.new.success!(message: 'Hello world')
+    #
+    #   case result
+    #   in [true, { message: }]
+    #     # Result is a success, do something with the `message` variable.
+    #   in [false, _]
+    #     # Result is a failure, do something else.
+    #   end
+    #
+    # @return [Array(Boolean, Hash<Symbol, anything>)]
+    def deconstruct
+      [@success, @data]
+    end
+
     # Mark the result as a failure, optionally attach +data+ via kwargs, and
     # freeze the object so it cannot be modified further.
     #
