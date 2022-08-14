@@ -65,6 +65,20 @@ class HellosController < ApplicationController
 end
 ```
 
+## Development
+
+Run the tests with:
+
+```
+bundle exec rspec
+```
+
+Generate Yard documentation with:
+
+```
+bundle exec yardoc
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
