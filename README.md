@@ -49,6 +49,17 @@ result[:message] # => nil
 result.to_h      # => {}
 ```
 
+An `Operatic::Result` also supports pattern matching in Ruby 2.7+ returning an array of `[success, data]`:
+
+```ruby
+case SayHello.call(name: 'Dave')
+in [true, { message: }]
+  # Result is a success, do something with the `message` variable.
+in [false, _]
+  # Result is a failure, do something else.
+end
+```
+
 A Rails controller might use Operatic like this:
 
 ```ruby
@@ -59,6 +70,21 @@ class HellosController < ApplicationController
     if result.success?
       render plain: result.message
     else
+      render :new
+    end
+  end
+end
+```
+
+Or a pattern matching alternative:
+
+```ruby
+class HellosController < ApplicationController
+  def create
+    case SayHello.call(name: params[:name])
+    in [true, { message: }]
+      render plain: message
+    in [false, _]
       render :new
     end
   end
