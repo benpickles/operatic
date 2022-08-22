@@ -57,8 +57,8 @@ module Operatic
     # *Note*: Calling {#success!} or {#failure!} more than once will raise a
     # +FrozenError+.
     def failure!(**data)
-      set_data(**data)
       @success = false
+      set_data(data)
       freeze
     end
 
@@ -81,8 +81,8 @@ module Operatic
     # *Note*: Calling {#success!} or {#failure!} more than once will raise a
     # +FrozenError+.
     def success!(**data)
-      set_data(**data)
       @success = true
+      set_data(data)
       freeze
     end
 
@@ -99,7 +99,7 @@ module Operatic
     end
 
     private
-      def set_data(**data)
+      def set_data(data)
         data.each do |key, value|
           @data[key] = value
         end
