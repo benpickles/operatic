@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 0.6.0 - 2022-08-22
+
+- Support pattern matching a Result (in Ruby 2.7+). <https://github.com/benpickles/operatic/pull/12>
+
 ## Version 0.5.0 - 2022-06-23
 
 - Support custom initialize method to aid compatibility with other libraries. <https://github.com/benpickles/operatic/pull/11>
