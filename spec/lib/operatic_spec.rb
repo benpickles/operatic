@@ -22,7 +22,7 @@ RSpec.describe Operatic do
         expect { klass.call('Dave') }.to raise_error(ArgumentError)
         expect { klass.call(['Dave']) }.to raise_error(ArgumentError)
 
-        if RUBY_VERSION > '3.0'
+        if RUBY_VERSION >= '3.1'
           expect { klass.call({ name: 'Dave' }) }.to raise_error(ArgumentError)
         end
       end
