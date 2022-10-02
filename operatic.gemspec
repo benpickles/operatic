@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   spec.metadata = {
-    'changelog_uri'     => 'https://github.com/benpickles/operatic/blob/master/CHANGELOG.md',
+    'changelog_uri'     => 'https://github.com/benpickles/operatic/blob/main/CHANGELOG.md',
     'documentation_uri' => 'https://rubydoc.info/gems/operatic',
     'source_code_uri'   => 'https://github.com/benpickles/operatic',
   }
