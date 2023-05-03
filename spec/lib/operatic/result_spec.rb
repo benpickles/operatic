@@ -1,6 +1,6 @@
 RSpec.describe Operatic::Result do
-  describe '.generate' do
-    let(:klass) { described_class.generate(:data, :stuff) }
+  describe '.define' do
+    let(:klass) { described_class.define(:data, :stuff) }
     let(:result) { klass.new }
 
     it 'creates a Result subclass with specified data accessors' do

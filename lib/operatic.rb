@@ -34,7 +34,7 @@ module Operatic
     end
 
     # Define a {Result} subclass with named accessors specific to the class via
-    # {Result.generate}.
+    # {Result.define}.
     #
     # @example
     #   class SayHello
@@ -56,7 +56,7 @@ module Operatic
     # @param attrs [Array<Symbol>] a list of convenience data accessors to
     #   define on the {Result}.
     def result_attr(*attrs)
-      @result_class = Result.generate(*attrs)
+      @result_class = Result.define(*attrs)
     end
 
     def result_class

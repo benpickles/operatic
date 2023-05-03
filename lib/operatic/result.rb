@@ -5,7 +5,7 @@ module Operatic
     # example usage.
     #
     # @param attrs [Array<Symbol>] a list of convenience data accessors.
-    def self.generate(*attrs)
+    def self.define(*attrs)
       Class.new(self) do
         attrs.each do |name|
           define_method name do
@@ -91,7 +91,7 @@ module Operatic
     end
 
     # Returns the full (frozen) hash of data attached to the result via
-    # {#success!}, {#failure!}, or convenience accessors added with {.generate}.
+    # {#success!}, {#failure!}, or convenience accessors added with {.define}.
     #
     # @return [Hash<Symbol, anything>]
     def to_h
