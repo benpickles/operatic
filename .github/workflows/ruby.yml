@@ -8,8 +8,6 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - '2.5'
-          - '2.6'
           - '2.7'
           - '3.0'
           - '3.1'
@@ -21,8 +19,4 @@ jobs:
       with:
         bundler-cache: true
         ruby-version: ${{ matrix.ruby }}
-    - name: 'Set RSpec exclude pattern for Ruby < 2.7'
-      run: echo "::set-output name=value::**/*_gte_ruby_2_7_spec.rb"
-      if: matrix.ruby == '2.5' || matrix.ruby == '2.6'
-      id: rspec_exclude_pattern
-    - run: bundle exec rspec --exclude-pattern=${{ steps.rspec_exclude_pattern.outputs.value }}
+    - run: bundle exec rspec

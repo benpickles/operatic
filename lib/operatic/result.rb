@@ -1,108 +1,93 @@
 module Operatic
   class Result
-    # Generate a subclass of {Result} with named +attrs+ accessors. This
-    # wouldn't normally be called directly, see {ClassMethods#result_attr} for
-    # example usage.
+    # @return [Data]
+    attr_reader :data
+
+    # @param data [Data]
+    def initialize(data)
+      @data = data
+    end
+
+    # Convenience proxy to read the +key+ from its {#data} object.
     #
-    # @param attrs [Array<Symbol>] a list of convenience data accessors.
-    def self.generate(*attrs)
-      Class.new(self) do
-        attrs.each do |name|
-          define_method name do
-            @data[name]
-          end
-
-          define_method "#{name}=" do |value|
-            @data[name] = value
-          end
-        end
-      end
-    end
-
-    def initialize
-      @data = {}
-      @success = true
-    end
-
-    # Read data that's attached to the result.
+    # @param key [Symbol]
+    #
+    # @return [anything]
     def [](key)
-      @data[key]
+      data[key]
     end
 
-    # Set data on the result.
-    def []=(key, value)
-      @data[key] = value
-    end
-
-    # Returns an array of success and data.
+    # Returns a tuple of self and {#to_h} allowing you to pattern match across
+    # both the result's status and its data.
     #
     # @example
-    #   result = Result.new.success!(message: 'Hello world')
+    #   class SayHello
+    #     include Operatic
     #
-    #   case result
-    #   in [true, { message: }]
+    #     def call
+    #       data[:message] = 'Hello world'
+    #     end
+    #   end
+    #
+    #   case SayHello.call
+    #   in [Operatic::Success, { message: }]
     #     # Result is a success, do something with the `message` variable.
-    #   in [false, _]
+    #   in [Operatic::Failure, _]
     #     # Result is a failure, do something else.
     #   end
     #
-    # @return [Array(Boolean, Hash<Symbol, anything>)]
+    # @return [Array(self, Hash<Symbol, anything>)]
     def deconstruct
-      [@success, @data]
+      [self, to_h]
     end
 
-    # Mark the result as a failure, optionally attach +data+ via kwargs, and
-    # freeze the object so it cannot be modified further.
-    #
-    # *Note*: Calling {#success!} or {#failure!} more than once will raise a
-    # +FrozenError+.
-    def failure!(**data)
-      @success = false
-      set_data(data)
-      freeze
-    end
-
-    def failure?
-      !@success
-    end
-
+    # @return [self]
     def freeze
-      @data.freeze
+      data.freeze
       super
     end
 
-    # Mark the result as a success, optionally attach +data+ via kwargs, and
-    # freeze the object so it cannot be modified further.
-    #
-    # Calling this is not strictly necessary as a +Result+ defaults to being a
-    # success, but it's a convenient means of attaching data and of indicating
-    # intent in the consuming code.
-    #
-    # *Note*: Calling {#success!} or {#failure!} more than once will raise a
-    # +FrozenError+.
-    def success!(**data)
-      @success = true
-      set_data(data)
-      freeze
+    # Forwards unknown methods to its {#data} object allowing convenience
+    # accessors defined via {Data.define} to be available directly on the
+    # {Result}.
+    def method_missing(name, *args, **kwargs, &block)
+      return data.public_send(name, *args, **kwargs, &block) if data.respond_to?(name)
+      super
     end
 
-    def success?
-      @success
+    def respond_to?(...)
+      super || data.respond_to?(...)
     end
 
-    # Returns the full (frozen) hash of data attached to the result via
-    # {#success!}, {#failure!}, or convenience accessors added with {.generate}.
+    # Convenience proxy to {Data#to_h}.
     #
     # @return [Hash<Symbol, anything>]
     def to_h
-      @data
+      data.to_h
+    end
+  end
+
+  class Success < Result
+    # @return [false]
+    def failure?
+      false
     end
 
-    private
-      def set_data(data)
-        data.each do |key, value|
-          @data[key] = value
-        end
-      end
+    # @return [true]
+    def success?
+      true
+    end
+  end
+
+  class Failure < Result
+    # @return [true]
+    def failure?
+      true
+    end
+
+    # @return [false]
+    def success?
+      false
+    end
   end
 end
