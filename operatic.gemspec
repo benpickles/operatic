@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
   spec.metadata = {
     'changelog_uri'     => 'https://github.com/benpickles/operatic/blob/main/CHANGELOG.md',
     'documentation_uri' => 'https://rubydoc.info/gems/operatic',
+    'rubygems_mfa_required' => 'true',
     'source_code_uri'   => 'https://github.com/benpickles/operatic',
   }
 
