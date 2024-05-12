@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 0.7.0 - 2024-05-12
+
+- Data within an operation is now gathered on a separate `#data` object that's passed to a concrete `Operatic::Success`/`Operatic::Failure` result instance on completion. Convenience data accessors can be defined on the `Data` object (via the renamed `Operatic.data_attr`) but remain available on the result using the magic of `Result#method_missing`. <https://github.com/benpickles/operatic/pull/18>
+- Require Ruby version 2.7+.
+- Support pattern matching solely against a Result's data. <https://github.com/benpickles/operatic/pull/20>
+
 ## Version 0.6.0 - 2022-08-22
 
 - Support pattern matching a Result (in Ruby 2.7+). <https://github.com/benpickles/operatic/pull/12>
