@@ -1,23 +1,32 @@
 RSpec.describe Operatic do
   describe '.call' do
-    let(:klass) {
-      Class.new do
-        include Operatic
-      end
-    }
-
     context 'when neither #failure! or #success! are explicitly called' do
-      it 'returns a frozen success result' do
+      let(:klass) {
+        Class.new do
+          include Operatic
+        end
+      }
+
+      it 'returns a frozen Success result' do
         result = klass.call
 
-        expect(result).to be_success
+        expect(result).to be_a(Operatic::Success)
+        expect(result).not_to be_failure
         expect(result).to be_frozen
+        expect(result).to be_success
+        expect(result.data).to be_frozen
         expect(result.to_h).to eql({})
         expect(result.to_h).to be_frozen
       end
     end
 
     context 'when called with something other than kwargs' do
+      let(:klass) {
+        Class.new do
+          include Operatic
+        end
+      }
+
       it 'raises ArgumentError', :aggregate_failures do
         expect { klass.call('Dave') }.to raise_error(ArgumentError)
         expect { klass.call(['Dave']) }.to raise_error(ArgumentError)
@@ -25,6 +34,24 @@ RSpec.describe Operatic do
         if RUBY_VERSION >= '3.1'
           expect { klass.call({ name: 'Dave' }) }.to raise_error(ArgumentError)
         end
+      end
+    end
+
+    context 'when an error is raised' do
+      let(:klass) {
+        Class.new do
+          include Operatic
+
+          def call
+            raise 'foo'
+          end
+        end
+      }
+
+      it 'is left for the consumer to deal with' do
+        expect {
+          klass.call
+        }.to raise_error(RuntimeError, 'foo')
       end
     end
   end
@@ -42,13 +69,13 @@ RSpec.describe Operatic do
       end
     }
 
-    context 'when the result is a success' do
+    context 'when the operation succeeds' do
       it do
-        expect(klass.call!).to be_success
+        expect(klass.call!).to be_a(Operatic::Success)
       end
     end
 
-    context 'when the result is a failure' do
+    context 'when the operation fails' do
       it do
         expect {
           klass.call!(oh_no: true)
@@ -57,15 +84,15 @@ RSpec.describe Operatic do
     end
   end
 
-  describe '.result_attr' do
+  describe '.data_attr' do
     let(:klass) {
       Class.new do
         include Operatic
 
-        result_attr :a, :b
+        data_attr :a, :b
 
         def call
-          result.a = 1
+          data.a = 1
 
           success!(
             b: 2,
@@ -75,10 +102,10 @@ RSpec.describe Operatic do
       end
     }
 
-    it 'adds attribute accessors to its result' do
+    it 'makes the defined attributes available to read on the result' do
       result = klass.call
 
-      expect(result).to be_success
+      expect(result).to be_a(Operatic::Success)
       expect(result).to be_frozen
       expect(result.a).to eql(1)
       expect(result.b).to eql(2)
@@ -87,7 +114,7 @@ RSpec.describe Operatic do
       expect(result.to_h).to be_frozen
     end
 
-    it 'only defines accessors on its own result class' do
+    it 'does not affect other result classes' do
       another_klass = Class.new do
         include Operatic
       end
@@ -109,7 +136,7 @@ RSpec.describe Operatic do
         end
 
         def call
-          result.success!(message: "Hello #{@name}")
+          success!(message: "Hello #{@name}")
         end
       end
     }
@@ -149,7 +176,7 @@ RSpec.describe Operatic do
           return failure!(a: 1, b: 2) if early_failure_with_data
 
           if failure_after_setting_data
-            result[:c] = 3
+            data[:c] = 3
             return failure!
           end
 
@@ -165,7 +192,7 @@ RSpec.describe Operatic do
       it do
         result = klass.call(early_failure: true)
 
-        expect(result).to be_failure
+        expect(result).to be_a(Operatic::Failure)
         expect(result).to be_frozen
         expect(result.to_h).to eql({})
         expect(result.to_h).to be_frozen
@@ -176,7 +203,7 @@ RSpec.describe Operatic do
       it do
         result = klass.call(early_failure_with_data: true)
 
-        expect(result).to be_failure
+        expect(result).to be_a(Operatic::Failure)
         expect(result).to be_frozen
         expect(result.to_h).to eql({ a: 1, b: 2 })
         expect(result.to_h).to be_frozen
@@ -187,7 +214,7 @@ RSpec.describe Operatic do
       it do
         result = klass.call(failure_after_setting_data: true)
 
-        expect(result).to be_failure
+        expect(result).to be_a(Operatic::Failure)
         expect(result).to be_frozen
         expect(result.to_h).to eql({ c: 3 })
         expect(result.to_h).to be_frozen
@@ -222,7 +249,7 @@ RSpec.describe Operatic do
         attr_reader :explicitly_called
         attr_reader :explicitly_called_with_data
 
-        result_attr :a
+        data_attr :a
 
         def call
           if call_after_failure
@@ -231,7 +258,7 @@ RSpec.describe Operatic do
           end
 
           if call_after_setting_data
-            result[:a] = 1
+            data[:a] = 1
             return success!
           end
 
@@ -251,7 +278,7 @@ RSpec.describe Operatic do
       it do
         result = klass.call
 
-        expect(result).to be_success
+        expect(result).to be_a(Operatic::Success)
         expect(result).to be_frozen
         expect(result.to_h).to be_empty
         expect(result.to_h).to be_frozen
@@ -262,7 +289,7 @@ RSpec.describe Operatic do
       it do
         result = klass.call(explicitly_called: true)
 
-        expect(result).to be_success
+        expect(result).to be_a(Operatic::Success)
         expect(result).to be_frozen
         expect(result.to_h).to be_empty
         expect(result.to_h).to be_frozen
@@ -273,7 +300,7 @@ RSpec.describe Operatic do
       it do
         result = klass.call(explicitly_called_with_data: true)
 
-        expect(result).to be_success
+        expect(result).to be_a(Operatic::Success)
         expect(result).to be_frozen
         expect(result.to_h).to eql({ b: 2 })
         expect(result.to_h).to be_frozen
@@ -284,7 +311,7 @@ RSpec.describe Operatic do
       it do
         result = klass.call(call_after_setting_data: true)
 
-        expect(result).to be_success
+        expect(result).to be_a(Operatic::Success)
         expect(result).to be_frozen
         expect(result.to_h).to eql({ a: 1 })
         expect(result.to_h).to be_frozen

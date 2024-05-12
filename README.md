@@ -24,7 +24,7 @@ class SayHello
   attr_reader :name
 
   # Declare convenience accessors on the result.
-  result_attr :message
+  data_attr :message
 
   def call
     # Exit the method and mark the result as a failure.
@@ -36,28 +36,20 @@ class SayHello
 end
 
 result = SayHello.call(name: 'Dave')
+result.class     # => Operatic::Success
+result.failure?  # => false
 result.success?  # => true
 result.message   # => "Hello Dave"
 result[:message] # => "Hello Dave"
 result.to_h      # => {:message=>"Hello Dave"}
 
 result = SayHello.call
+result.class     # => Operatic::Failure
 result.failure?  # => true
 result.success?  # => false
 result.message   # => nil
 result[:message] # => nil
 result.to_h      # => {}
-```
-
-An `Operatic::Result` also supports pattern matching in Ruby 2.7+ returning an array of `[success, data]`:
-
-```ruby
-case SayHello.call(name: 'Dave')
-in [true, { message: }]
-  # Result is a success, do something with the `message` variable.
-in [false, _]
-  # Result is a failure, do something else.
-end
 ```
 
 A Rails controller might use Operatic like this:
@@ -76,15 +68,28 @@ class HellosController < ApplicationController
 end
 ```
 
-Or a pattern matching alternative:
+## Pattern matching
+
+An Operatic result also supports pattern matching in Ruby 2.7+ returning an array of `[success, data]`:
+
+```ruby
+case SayHello.call(name: 'Dave')
+in [Operatic::Success, { message: }]
+  # Result is a success, do something with the `message` variable.
+in [Operatic::Failure, _]
+  # Result is a failure, do something else.
+end
+```
+
+Which might be consumed in Rails like this:
 
 ```ruby
 class HellosController < ApplicationController
   def create
     case SayHello.call(name: params[:name])
-    in [true, { message: }]
+    in [Operatic::Success, { message: }]
       render plain: message
-    in [false, _]
+    in [Operatic::Failure, _]
       render :new
     end
   end

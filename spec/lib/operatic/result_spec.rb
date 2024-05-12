@@ -1,59 +1,56 @@
 RSpec.describe Operatic::Result do
-  describe '.generate' do
-    let(:klass) { described_class.generate(:data, :stuff) }
-    let(:result) { klass.new }
+  describe '#[]' do
+    subject { described_class.new(data) }
 
-    it 'creates a Result subclass with specified data accessors' do
-      result.data = 1
-      result.stuff = 2
+    let(:data) { Operatic::Data.new(a: 1, b: 2) }
 
-      expect(result.data).to eql(1)
-      expect(result.stuff).to eql(2)
-      expect(result).not_to respond_to(:c)
-      expect(result.to_h).to eql({ data: 1, stuff: 2 })
-
-      result[:c] = 3
-
-      expect(result.to_h).to eql({ data: 1, stuff: 2, c: 3 })
+    it 'reads the key from its data object' do
+      expect(subject[:a]).to be(1)
+      expect(subject[:b]).to be(2)
     end
   end
 
-  describe '#[]= / #[]' do
-    let(:result) { described_class.new }
+  describe '#deconstruct (pattern matching)' do
+    subject { Operatic::Success.new(data) }
 
-    it 'sets and gets data' do
-      result[:a] = 1
-      result[:b] = 2
+    let(:data) { Operatic::Data.new(a: 1, b: 2) }
 
-      expect(result[:a]).to be(1)
-      expect(result[:b]).to be(2)
-      expect(result.to_h).to eql({ a: 1, b: 2 })
+    it 'returns a tuple of itself and its data' do
+      deconstructed = case subject
+      in [Operatic::Success, { a: }]
+        [true, a]
+      end
+
+      expect(deconstructed).to eql([true, 1])
     end
   end
 
-  describe '#failure!' do
-    let(:result) { described_class.new }
+  describe '#method_missing / #respond_to?' do
+    subject { described_class.new(data) }
 
-    it 'marks itself as a failure, sets data, and freezes itself' do
-      result.failure!(a: 1, b: 2)
+    let(:data) { Operatic::Data.define(:a).new(a: 1, b: 2) }
 
-      expect(result).to be_failure
-      expect(result).to be_frozen
-      expect(result.to_h).to eql({ a: 1, b: 2 })
-      expect(result.to_h).to be_frozen
+    it 'forwards to methods defined on its data object' do
+      expect(subject.respond_to?(:a)).to be(true)
+      expect(subject.a).to eql(1)
+
+      expect(subject.respond_to?(:b)).to be(false)
+      expect { subject.b }.to raise_error(NoMethodError)
     end
-  end
 
-  describe '#success!' do
-    let(:result) { described_class.new }
+    it 'forwards all arguments' do
+      def data.foo(*args, **kwargs, &block)
+        yield(args, kwargs)
+      end
 
-    it 'marks itself as a success, sets data, and freezes itself' do
-      result.success!(a: 1, b: 2)
+      returned = subject.foo(1, 2, a: 1, b: 2) do |args, kwargs|
+        [args, kwargs]
+      end
 
-      expect(result).to be_success
-      expect(result).to be_frozen
-      expect(result.to_h).to eql({ a: 1, b: 2 })
-      expect(result.to_h).to be_frozen
+      expect(returned).to eql([
+        [1, 2],
+        { a: 1, b: 2 },
+      ])
     end
   end
 end
