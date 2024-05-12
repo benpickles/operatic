@@ -70,7 +70,7 @@ end
 
 ## Pattern matching
 
-An Operatic result also supports pattern matching in Ruby 2.7+ returning an array of `[success, data]`:
+An Operatic result also supports pattern matching allowing you to match over a tuple of the result class and its data:
 
 ```ruby
 case SayHello.call(name: 'Dave')
@@ -78,6 +78,17 @@ in [Operatic::Success, { message: }]
   # Result is a success, do something with the `message` variable.
 in [Operatic::Failure, _]
   # Result is a failure, do something else.
+end
+```
+
+Or match solely against its data:
+
+```ruby
+case SayHello.call(name: 'Dave')
+in message:
+  # Result has the `message` key, do something with the variable.
+else
+  # Do something else.
 end
 ```
 
