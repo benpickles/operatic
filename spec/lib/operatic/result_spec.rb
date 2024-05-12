@@ -25,6 +25,21 @@ RSpec.describe Operatic::Result do
     end
   end
 
+  describe '#deconstruct_keys (pattern matching)' do
+    subject { described_class.new(data) }
+
+    let(:data) { Operatic::Data.new(a: 1, b: 2, c: 3) }
+
+    it 'matches against its data' do
+      deconstructed = case subject
+      in a:, c:
+        [a, c]
+      end
+
+      expect(deconstructed).to eql([1, 3])
+    end
+  end
+
   describe '#method_missing / #respond_to?' do
     subject { described_class.new(data) }
 

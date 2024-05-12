@@ -41,6 +41,29 @@ module Operatic
       [self, to_h]
     end
 
+    # Pattern match against the result's data via {#to_h}.
+    #
+    # @example
+    #   class SayHello
+    #     include Operatic
+    #
+    #     def call
+    #       data[:message] = 'Hello world'
+    #     end
+    #   end
+    #
+    #   case SayHello.call
+    #   in message:
+    #     # Result has the `message` key, do something with the variable.
+    #   else
+    #     # Do something else.
+    #   end
+    #
+    # @return [Hash<Symbol, anything>]
+    def deconstruct_keys(keys = nil)
+      to_h
+    end
+
     # @return [self]
     def freeze
       data.freeze
