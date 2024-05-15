@@ -14,23 +14,23 @@ gem 'operatic'
 
 ## Usage
 
-An Operatic class encapsulates an operation and communicates the status of the operation via its result object. As well as being either a `#success?` or a `#failure?` further data can be attached via `#success!`, `#failure!` or convenience accessors.
+An Operatic class encapsulates an operation and communicates its status via a result object. As well as being a `#success?` or `#failure?` data can also be attached to the result via `#success!`, `#failure!`, or during the operation's execution.
 
 ```ruby
 class SayHello
   include Operatic
 
-  # Readers for attributes passed via `.call`.
+  # Readers for instance variables defined in `.call`.
   attr_reader :name
 
-  # Declare convenience accessors on the result.
+  # Declare convenience data accessors.
   data_attr :message
 
   def call
-    # Exit the method and mark the result as a failure.
+    # Exit the method and mark the operation as a failure.
     return failure! unless name
 
-    # Mark the result as a success and attach further data.
+    # Mark the operation as a success and attach further data.
     success!(message: "Hello #{name}")
   end
 end
